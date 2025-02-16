@@ -1,0 +1,87 @@
+<project name="video-rental-application"
+         default="build"
+         xmlns:ivy="antlib:org.apache.ivy.ant">
+    <property file="build.properties"/>
+
+    <!--    Build properties-->
+    <property name="build.dir" location="build"/>
+    <property name="classes.dir" location="${build.dir}/classes"/>
+    <property name="dist.dir" location="${build.dir}/dist"/>
+    <property name="src.dir" location="src/main/java"/>
+    <property name="doc.dir" location="${build.dir}/doc"/>
+
+    <!--    Clean-->
+    <target name="clean" description="Remove temporary directories">
+        <echo>Cleaning directories...</echo>
+        <delete includeemptydirs="true">
+            <fileset dir="." includes="${temp.dirs}"/>
+        </delete>
+    </target>
+
+    <!--    Initialize build process-->
+    <target name="init" depends="clean" description="Create directories">
+        <echo>Creating directories...</echo>
+        <mkdir dir="${classes.dir}"/>
+        <mkdir dir="${dist.dir}"/>
+    </target>
+
+    <!--    Compile-->
+    <target name="compile" depends="init" description="Compiles the java project.">
+        <echo>Compiling...</echo>
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" includeantruntime="false" debug="true"/>
+    </target>
+
+    <!--    Build-->
+    <target name="build" depends="compile" description="Builds the project">
+        <echo>Building...</echo>
+    </target>
+
+    <!-- Generate java documentation   -->
+    <target name="generate-javadoc">
+        <javadoc packagenames="com.rocs.video.rental.application.*"
+                 sourcepath="${src.dir}"
+                 destdir="${doc.dir}"
+                 version="${version}"
+                 windowtitle="Video Rental Application Documentation">
+            <fileset dir="."></fileset>
+            <doctitle><![CDATA[= Test Documentation =]]></doctitle>
+            <bottom>
+                <![CDATA[Copyright © ${copyright.year}. All Rights Reserved.]]>
+            </bottom>
+        </javadoc>
+        <echo message="java doc has been generated!"/>
+    </target>
+
+    <!--    Create jar-->
+    <target name="build-jar" description="Creates a jar file for the project">
+        <jar destfile="${dist.dir}/vra.jar"
+             basedir="${classes.dir}">
+            <manifest>
+                <attribute name="Main-Class"
+                           value="com.rocs.video.rental.application.VideoRentalApplication"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <!--    Run application-->
+    <target name="run" description="Run the application">
+        <java jar="${dist.dir}/vra.jar" fork="true"/>
+    </target>
+
+    <target name="resolve" description="Resolve dependencies">
+        <ivy:resolve />
+        <ivy:retrieve />
+    </target>
+
+    <target name="install" description="Install modules">
+        <ivy:install organisation="com.oracle.database.jdbc"
+                     module="ojdbc11"
+                     revision="23.6.0.24.10"
+                     transitive="true"
+                     overwrite="false"
+                     from="public"
+                     to="local"/>
+    </target>
+
+
+</project>
