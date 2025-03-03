@@ -3,27 +3,28 @@ package com.rocs.video.rental.application.data.dao.item.impl;
 import com.rocs.video.rental.application.data.connection.ConnectionHelper;
 import com.rocs.video.rental.application.data.dao.item.ItemDao;
 import com.rocs.video.rental.application.model.item.Item;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ItemDaoImplTest {
 
     @Mock
@@ -37,31 +38,29 @@ public class ItemDaoImplTest {
 
     private static MockedStatic<ConnectionHelper> connectionHelper;
 
-    @Before
+    private Item item;
+
+    @BeforeEach
     public void setUp() throws SQLException {
         //mock connection helper
         connectionHelper = Mockito.mockStatic(ConnectionHelper.class);
         connectionHelper.when(ConnectionHelper::getConnection).thenReturn(connection);
 
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
-        doNothing().when(preparedStatement).setString(anyInt(), anyString());
-        //doNothing().when(preparedStatement).setInt(anyInt(), anyInt());
-
-        when(preparedStatement.executeQuery()).thenReturn(resultSet);
-        //when(preparedStatement.executeUpdate()).thenReturn(anyInt());
-
-        when(resultSet.next()).thenReturn(Boolean.TRUE, Boolean.FALSE);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         connectionHelper.close();
     }
 
     @Test
     public void testFindItemById() throws SQLException {
+        when(preparedStatement.executeQuery()).thenReturn(resultSet);
+        when(resultSet.next()).thenReturn(Boolean.TRUE, Boolean.FALSE);
+
         ItemDao itemDao = new ItemDaoImpl();
-        Item item = itemDao.findItemById("1");
+        item = itemDao.findItemById("1");
 
         verify(connection, times(1)).prepareStatement(anyString());
         verify(preparedStatement, times(1)).setString(anyInt(), anyString());
@@ -72,6 +71,9 @@ public class ItemDaoImplTest {
 
     @Test
     public void testFindAllItems() throws SQLException {
+        when(preparedStatement.executeQuery()).thenReturn(resultSet);
+        when(resultSet.next()).thenReturn(Boolean.TRUE, Boolean.FALSE);
+
         ItemDao itemDao = new ItemDaoImpl();
         List<Item> items = itemDao.findAllItems();
 

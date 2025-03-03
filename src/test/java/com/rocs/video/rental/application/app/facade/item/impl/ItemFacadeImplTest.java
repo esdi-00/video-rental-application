@@ -2,11 +2,11 @@ package com.rocs.video.rental.application.app.facade.item.impl;
 
 import com.rocs.video.rental.application.app.facade.item.ItemFacade;
 import com.rocs.video.rental.application.model.item.Item;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ItemFacadeImplTest {
 
     @Mock
@@ -24,7 +24,7 @@ public class ItemFacadeImplTest {
 
     private List<Item> itemList;
 
-    @Before
+    @BeforeEach
     public void setup() {
         itemList = new ArrayList<>();
         Item item = new Item();
